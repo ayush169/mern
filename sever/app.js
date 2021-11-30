@@ -5,26 +5,18 @@ const dotenv = require("dotenv");
 
 dotenv.config({ path: "./config.env" });
 
-const DB = process.env.DATABASE;
+const PORT = process.env.PORT;
+require("./db/conn");
+const User = require("./models/userSchema");
 
-mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-  })
-  .then(() => {
-    console.log("connection successfull with database");
-  })
-  .catch((err) => console.log("no connection"));
+app.use(express.json());
+app.use(require("./router/auth"));
 
 // Middleware
 const middleware = (req, res, next) => {
   console.log("ayush");
   next();
 };
-
-app.get("/", (req, res) => {
-  res.send("hala madrid");
-});
 
 app.get("/about", middleware, (req, res) => {
   console.log(`hello to about`);
@@ -43,6 +35,6 @@ app.get("/signup", (req, res) => {
   res.send("hala madrid signup");
 });
 
-app.listen(3000, () => {
-  console.log(`connection was successful at 3000`);
+app.listen(PORT, () => {
+  console.log(`connection was successful at ${PORT}`);
 });
