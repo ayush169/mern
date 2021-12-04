@@ -196,13 +196,21 @@ body {
 }
 
 .signup {
+  margin: 0;
   height: calc(100vh - 82px);
   display: grid;
   place-items: center;
 }
 
+.pb-5,
+.py-5 {
+  padding-bottom: 1rem !important;
+}
+
 .signup-content {
-  padding: 75px 0;
+  /* padding: 45px 0;
+  height: 90%;
+  box-sizing: border-box; */
 }
 
 .signup-form,
@@ -218,6 +226,7 @@ body {
 }
 
 .form-title {
+  padding-top: 20px;
   margin-bottom: 33px;
   font-weight: bold;
 }
@@ -289,6 +298,7 @@ figure {
 
 .form-group:last-child {
   margin-bottom: 0px;
+  padding-bottom: 20px;
 }
 
 input {

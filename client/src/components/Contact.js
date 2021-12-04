@@ -1,6 +1,71 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Contact = () => {
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const userContact = async () => {
+    try {
+      const res = await fetch("/getdata", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+      setUserData({
+        ...userData,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+      });
+      console.log(data);
+
+      if (!res.status === 200) {
+        const error = new Error(res.error);
+        throw error;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    userContact();
+  }, []);
+
+  const handleInputs = (e) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
+  };
+
+  const contactForm = async (e) => {
+    e.preventDefault();
+    const { name, email, phone, message } = userData;
+
+    const res = await fetch("/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, phone, message }),
+    });
+
+    const data = await res.json();
+
+    if (!data) {
+      console.log("message not sent");
+    } else {
+      alert("message sent successfully");
+      setUserData({ ...userData, message: "" });
+    }
+  };
+
   return (
     <>
       <div className="contact_info">
@@ -67,8 +132,8 @@ const Contact = () => {
                       id="contact_form_name"
                       className="contact_form_name input_field"
                       name="name"
-                      // value={userData.name}
-                      // onChange={handleInputs}
+                      value={userData.name}
+                      onChange={handleInputs}
                       placeholder="Your name"
                       required
                     />
@@ -78,8 +143,8 @@ const Contact = () => {
                       id="contact_form_email"
                       className="contact_form_email input_field"
                       name="email"
-                      // value={userData.email}
-                      // onChange={handleInputs}
+                      value={userData.email}
+                      onChange={handleInputs}
                       placeholder="Your Email"
                       required
                     />
@@ -89,8 +154,8 @@ const Contact = () => {
                       id="contact_form_phone"
                       className="contact_form_phone input_field"
                       name="phone"
-                      // value={userData.phone}
-                      // onChange={handleInputs}
+                      value={userData.phone}
+                      onChange={handleInputs}
                       placeholder="Your Phone Number"
                       required
                     />
@@ -100,8 +165,8 @@ const Contact = () => {
                     <textarea
                       className="text_field contact_form_message"
                       name="message"
-                      // value={userData.message}
-                      // onChange={handleInputs}
+                      value={userData.message}
+                      onChange={handleInputs}
                       placeholder="Message"
                       cols="30"
                       rows="10"
@@ -112,7 +177,7 @@ const Contact = () => {
                     <button
                       type="submit"
                       className="button contact_submit_button"
-                      // onClick={contactForm}
+                      onClick={contactForm}
                     >
                       Send Message
                     </button>

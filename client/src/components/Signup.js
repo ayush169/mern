@@ -1,8 +1,57 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import signpic from "../images/signup.svg";
 
 const Signup = () => {
+  const history = useHistory();
+
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    work: "",
+    password: "",
+    cpassword: "",
+  });
+
+  const handleInputs = (e) => {
+    const { name, value } = e.target;
+
+    setUser({ ...user, [name]: value });
+  };
+
+  const PostData = async (e) => {
+    e.preventDefault();
+    const { name, email, phone, work, password, cpassword } = user;
+
+    // proxy: localhost:5000 in package.json
+    const res = await fetch("/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        phone,
+        work,
+        password,
+        cpassword,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.status === 422 || !data) {
+      window.alert("invalid registration");
+      console.log("invalid registration");
+    } else {
+      window.alert("registration successful");
+      console.log("registration successful");
+      history.push("/login");
+    }
+  };
+
   return (
     <>
       <section className="signup">
@@ -19,9 +68,9 @@ const Signup = () => {
                     type="text"
                     name="name"
                     id="name"
-                    autocomplete="off"
-                    // value={user.name}
-                    // onChange={handleInputs}
+                    autoComplete="off"
+                    value={user.name}
+                    onChange={handleInputs}
                     placeholder="Your Name"
                   />
                 </div>
@@ -35,8 +84,8 @@ const Signup = () => {
                     name="email"
                     id="email"
                     autoComplete="off"
-                    // value={user.email}
-                    // onChange={handleInputs}
+                    value={user.email}
+                    onChange={handleInputs}
                     placeholder="Your Email"
                   />
                 </div>
@@ -50,8 +99,8 @@ const Signup = () => {
                     name="phone"
                     id="phone"
                     autoComplete="off"
-                    // value={user.phone}
-                    // onChange={handleInputs}
+                    value={user.phone}
+                    onChange={handleInputs}
                     placeholder="Your Phone"
                   />
                 </div>
@@ -65,8 +114,8 @@ const Signup = () => {
                     name="work"
                     id="work"
                     autoComplete="off"
-                    // value={user.work}
-                    // onChange={handleInputs}
+                    value={user.work}
+                    onChange={handleInputs}
                     placeholder="Your Profession"
                   />
                 </div>
@@ -80,8 +129,8 @@ const Signup = () => {
                     name="password"
                     id="password"
                     autoComplete="off"
-                    // value={user.password}
-                    // onChange={handleInputs}
+                    value={user.password}
+                    onChange={handleInputs}
                     placeholder="Your Password"
                   />
                 </div>
@@ -95,8 +144,8 @@ const Signup = () => {
                     name="cpassword"
                     id="cpassword"
                     autoComplete="off"
-                    // value={user.cpassword}
-                    // onChange={handleInputs}
+                    value={user.cpassword}
+                    onChange={handleInputs}
                     placeholder="Confirm Your Password"
                   />
                 </div>
@@ -108,7 +157,7 @@ const Signup = () => {
                     id="signup"
                     className="form-submit"
                     value="register"
-                    // onClick={PostData}
+                    onClick={PostData}
                   />
                 </div>
               </form>

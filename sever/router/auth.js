@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("../db/conn");
 const User = require("../models/userSchema");
+const authenticate = require("../middleware/authenticate");
 
 router.get("/", (req, res) => {
   res.send("hala madrid router");
@@ -64,6 +65,42 @@ router.post("/signin", async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+  }
+});
+
+router.get("/about", authenticate, (req, res) => {
+  console.log("hello to about");
+  res.send(req.rootUser);
+});
+
+router.get("/getdata", authenticate, (req, res) => {
+  console.log(`hello to contact/home`);
+  res.send(req.rootUser);
+});
+
+router.post("/contact", authenticate, async (req, res) => {
+  try {
+    const { name, email, phone, message } = req.body;
+
+    if (!name || !email || !phone || !message) {
+      console.log("error in contact form");
+      return res.json({ error: "please fill the conact form correctly." });
+    }
+    const userContact = await User.findOne({ _id: req.userId });
+
+    if (userContact) {
+      const userMessage = await userContact.addMessage(
+        name,
+        email,
+        phone,
+        message
+      );
+
+      await userContact.save();
+      res.status(201).json({ message: "user contact successfully" });
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
