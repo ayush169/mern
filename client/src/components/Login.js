@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import loginpic from "../images/login.svg";
+import { UserContext } from "../App";
 
 const Login = () => {
+  const { state, dispatch } = useContext(UserContext);
+
   const history = useHistory();
 
   const [email, setEmail] = useState("");
@@ -24,6 +27,7 @@ const Login = () => {
     if (res.status === 400 || !data) {
       window.alert("invalid credentials");
     } else {
+      dispatch({ type: "USER", payload: true });
       window.alert("login successful");
       history.push("/");
     }
@@ -44,7 +48,7 @@ const Login = () => {
             </div>
 
             <div className="signin-form">
-              <h2 className="form-title">Sign up</h2>
+              <h2 className="form-title">Sign In</h2>
               <form method="POST" className="register-form" id="register-form">
                 <div className="form-group">
                   <label htmlFor="email">

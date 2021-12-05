@@ -104,4 +104,10 @@ router.post("/contact", authenticate, async (req, res) => {
   }
 });
 
+router.get("/logout", (req, res) => {
+  console.log("hello to logout");
+  res.clearCookie("jwtoken", { path: "/" });
+  res.status(200).send("user logout");
+});
+
 module.exports = router;
